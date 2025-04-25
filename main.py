@@ -2,7 +2,7 @@ import dotenv
 import os
 import argparse
 # Import the function that creates the flow
-from flow import create_tutorial_flow
+from flow import create_doc_flow
 
 dotenv.load_dotenv()
 
@@ -52,7 +52,7 @@ def main():
         "local_dir": args.dir,
         "project_name": args.name, # Can be None, FetchRepo will derive it
         "github_token": github_token,
-        "output_dir": args.output, # Base directory for CombineTutorial output
+        "output_dir": args.output, # Base directory for CombineDoc output
 
         # Add include/exclude patterns and max file size
         "include_patterns": set(args.include) if args.include else DEFAULT_INCLUDE_PATTERNS,
@@ -75,10 +75,10 @@ def main():
     print(f"Starting tutorial generation for: {args.repo or args.dir} in {args.language.capitalize()} language")
 
     # Create the flow instance
-    tutorial_flow = create_tutorial_flow()
+    doc_flow = create_doc_flow()
 
     # Run the flow
-    tutorial_flow.run(shared)
+    doc_flow.run(shared)
 
 if __name__ == "__main__":
     main()

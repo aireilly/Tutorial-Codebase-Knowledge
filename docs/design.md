@@ -48,7 +48,7 @@ This project primarily uses a **Workflow** pattern to decompose the tutorial gen
 3.  **`AnalyzeRelationships`**: Uses an LLM to analyze the identified abstractions (referenced by index) and their related code to generate a high-level project summary and describe the relationships/interactions between these abstractions (summary and labels potentially translated if language != English), specifying *source* and *target* abstraction indices and a concise label for each interaction.
 4.  **`OrderChapters`**: Determines the most logical order (as indices) to present the abstractions in the tutorial, considering input context which might be translated. The output order itself is language-independent.
 5.  **`WriteChapters` (BatchNode)**: Iterates through the ordered list of abstraction indices. For each abstraction, it calls an LLM to write a detailed, beginner-friendly chapter (content potentially fully translated if language != English), using the relevant code files (accessed via indices) and summaries of previously generated chapters (potentially translated) as context.
-6.  **`CombineTutorial`**: Creates an output directory, generates a Mermaid diagram from the relationship data (using potentially translated names/labels), and writes the project summary (potentially translated), relationship diagram, chapter links (using potentially translated names), and individually generated chapter files (potentially translated content) into it. Fixed text like "Chapters", "Source Repository", and the attribution footer remain in English.
+6.  **`CombineDoc`**: Creates an output directory, generates a Mermaid diagram from the relationship data (using potentially translated names/labels), and writes the project summary (potentially translated), relationship diagram, chapter links (using potentially translated names), and individually generated chapter files (potentially translated content) into it. Fixed text like "Chapters", "Source Repository", and the attribution footer remain in English.
 
 ```mermaid
 flowchart TD
@@ -56,7 +56,7 @@ flowchart TD
     B --> C[AnalyzeRelationships];
     C --> D[OrderChapters];
     D --> E[Batch WriteChapters];
-    E --> F[CombineTutorial];
+    E --> F[CombineDoc];
 ```
 
 ## Utility Functions
@@ -108,7 +108,7 @@ shared = {
      },
     "chapter_order": [], # Output of OrderChapters: List of indices into shared["abstractions"], determining tutorial order
     "chapters": [], # Output of WriteChapters: List of chapter content strings (Markdown, potentially translated), ordered according to chapter_order
-    "final_output_dir": None # Output of CombineTutorial: Path to the final generated tutorial directory (e.g., "output/my_project")
+    "final_output_dir": None # Output of CombineDoc: Path to the final generated tutorial directory (e.g., "output/my_project")
 }
 ```
 
@@ -156,7 +156,7 @@ shared = {
         *   `exec(item)`: Construct a prompt for `call_llm`. If language is not English, add detailed instructions to write the *entire* chapter in the target language, translating explanations, examples, etc., while noting which input context might already be translated. Ask LLM to write a beginner-friendly Markdown chapter. Provide potentially translated concept details. Include a summary of previously written chapters (potentially translated). Provide relevant code snippets. Add the generated (potentially translated) chapter content to `self.chapters_written_so_far` for the next iteration's context. Return the chapter content.
         *   `post(shared, prep_res, exec_res_list)`: `exec_res_list` contains the generated chapter Markdown content strings (potentially translated), ordered correctly. Assign this list directly to `shared["chapters"]`. Clean up `self.chapters_written_so_far`.
 
-6.  **`CombineTutorial`**
+6.  **`CombineDoc`**
     *   *Purpose*: Assemble the final tutorial files, including a Mermaid diagram using potentially translated labels/names. Fixed text remains English.
     *   *Type*: Regular
     *   *Steps*:

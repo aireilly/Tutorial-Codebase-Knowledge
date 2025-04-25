@@ -6,10 +6,10 @@ from nodes import (
     AnalyzeRelationships,
     OrderChapters,
     WriteChapters,
-    CombineTutorial
+    CombineDoc
 )
 
-def create_tutorial_flow():
+def create_doc_flow():
     """Creates and returns the codebase tutorial generation flow."""
 
     # Instantiate nodes
@@ -18,16 +18,16 @@ def create_tutorial_flow():
     analyze_relationships = AnalyzeRelationships(max_retries=5, wait=20)
     order_chapters = OrderChapters(max_retries=5, wait=20)
     write_chapters = WriteChapters(max_retries=5, wait=20) # This is a BatchNode
-    combine_tutorial = CombineTutorial()
+    combine_doc = CombineDoc()
 
     # Connect nodes in sequence based on the design
     fetch_repo >> identify_abstractions
     identify_abstractions >> analyze_relationships
     analyze_relationships >> order_chapters
     order_chapters >> write_chapters
-    write_chapters >> combine_tutorial
+    write_chapters >> combine_doc
 
     # Create the flow starting with FetchRepo
-    tutorial_flow = Flow(start=fetch_repo)
+    doc_flow = Flow(start=fetch_repo)
 
-    return tutorial_flow
+    return doc_flow
