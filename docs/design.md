@@ -13,10 +13,11 @@ nav_order: 2
 > Notes for AI: Keep it simple and clear.
 > If the requirements are abstract, write concrete user stories
 
-**User Story:** As a developer onboarding to a new codebase, I want a tutorial automatically generated from its GitHub repository or local directory, optionally in a specific language. This tutorial should explain the core abstractions, their relationships (visualized), and how they work together, using beginner-friendly language, analogies, and multi-line descriptions where needed, so I can understand the project structure and key concepts quickly without manually digging through all the code.
+**User Story:** As a developer onboarding to a new codebase, I want to automatically generate developer docs from the GitHub code repository or local directory, optionally in a specific language. This tutorial should explain the core abstractions, their relationships (visualized), and how they work together, using language that is appropriate to the developer audience, analogies, and multi-line descriptions where needed, so I can understand the project structure and key concepts quickly without manually digging through all the code. I want to generate the docs using the Red Hat docs style guide and modular documentation style guide which I provide as an input.
 
 **Input:**
-- A publicly accessible GitHub repository URL or a local directory path.
+- A publicly accessible GitHub repository URL or a local directory path for the code to be documented.
+- A publicly accessible GitHub repository URL for the Red Hat docs style guide.
 - A project name (optional, will be derived from the URL/directory if not provided).
 - Desired language for the tutorial (optional, defaults to English).
 
@@ -90,6 +91,7 @@ The shared Store structure is organized as follows:
 shared = {
     # --- Inputs ---
     "repo_url": None, # Provided by the user/main script if using GitHub
+    "styleguide_repo_url": None, # Provided by the user/main script if using GitHub
     "local_dir": None, # Provided by the user/main script if using local directory
     "project_name": None, # Optional, derived from repo_url/local_dir if not provided
     "github_token": None, # Optional, from argument or environment variable
