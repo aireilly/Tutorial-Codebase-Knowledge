@@ -564,7 +564,7 @@ Relevant Code Snippets (Code itself remains unchanged):
 {file_context_str if file_context_str else "No specific code snippets provided for this abstraction."}
 
 Instructions for the chapter (Generate content in {language.capitalize()} unless specified otherwise):
-- Start with a clear heading (e.g., `# Chapter {chapter_num}: {abstraction_name}`). Use the provided concept name.
+- Start with a clear heading (e.g., `# {abstraction_name}`). Use the provided concept name.
 
 - If this is not the first chapter, begin with a brief transition from the previous chapter{instruction_lang_note}, referencing it with a proper Markdown link using its name{link_lang_note}.
 
@@ -574,24 +574,74 @@ Instructions for the chapter (Generate content in {language.capitalize()} unless
 
 - Explain how to use this abstraction to solve the use case{instruction_lang_note}. Give example inputs and outputs for code snippets (if the output isn't values, describe at a high level what will happen{instruction_lang_note}).
 
-- Each code block should be BELOW 20 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments{code_comment_note} to skip non-important implementation details. Each code block should have a beginner friendly explanation right after it{instruction_lang_note}.
+- Each code block should be BELOW 20 lines! If longer code blocks are needed, break them down into smaller pieces and walk through them one-by-one. Aggresively simplify the code to make it minimal. Use comments{code_comment_note} to skip non-important implementation details. Each code block explanation right after it{instruction_lang_note}.
 
-- Describe the internal implementation to help understand what's under the hood{instruction_lang_note}. First provide a non-code or code-light walkthrough on what happens step-by-step when the abstraction is called{instruction_lang_note}.{mermaid_lang_note}.
+- Describe the internal implementation to help understand what's under the hood{instruction_lang_note}. It's recommended to use a simple sequenceDiagram with a dummy example - keep it minimal with at most 5 participants to ensure clarity. If participant name has space, use: `participant QP as Query Processing`. {mermaid_lang_note}.
 
 - Then dive deeper into code for the internal implementation with references to files. Provide example code blocks, but make them similarly simple and beginner-friendly. Explain{instruction_lang_note}.
 
 - IMPORTANT: When you need to refer to other core abstractions covered in other chapters, ALWAYS use proper Markdown links like this: [Chapter Title](filename.md). Use the Complete Doc Structure above to find the correct filename and the chapter title{link_lang_note}. Translate the surrounding text.
 
-- End the chapter with a brief conclusion that summarizes what was learned{instruction_lang_note} and provides a transition to the next chapter{instruction_lang_note}. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename){link_lang_note}.
+- Use mermaid diagrams to illustrate complex concepts (```mermaid``` format). {mermaid_lang_note}.
+
+- End the chapter with a brief conclusion. If there is a next chapter, use a proper Markdown link: [Next Chapter Title](next_chapter_filename){link_lang_note}.
 
 - Output *only* the Markdown content for this chapter.
+
+- Use conscious, inclusive language
+
+- Avoid contractions in formal content; allow in "fairly conversational" quick-start guides.
+
+- Focus on user goals and actions.
+
+- Separate conceptual background from step-by-step tasks.
+
+- Use short paragraphs, bulleted lists, scannable headings.
+
+- Use sentence-style capitalization for titles/headings (3–11 words).
+
+- Date format: "DD MM YYYY"
+
+- Single command per code block.
+
+- For code blocks and referring to use replaceable values, use backticks and angle brackets, for example `<value_name>`.
+
+- Structure content by topic, into one of three topic types, concept, reference, procedure.
+
+- To help readers find the information that they need, every topic must include a one or two line short description, also called an abstract.
+
+- Avoid over-nesting topics in the structure: Limit topic map nesting; link out if too complex.
+
+- Identify the user story; frame intro in user-centric "you" language.
+
+- Choose topic type (concept, procedure, reference) based on content intent.
+
+- Strictly adhere to topic schemas and minimalism principles.
+
+- Use inclusive, simple language; avoid jargon and fluff.
+
+- Keep content scannable: headings 3–11 words, short lists, minimal prose.
+
+- Findability: Make content easy to find via search and easy to scan using short text blocks and lists.
+
+- Titles and headings: Use clear, keyword-rich headings between 3–11 words to help users and improve search visibility.
+
+- Eliminate fluff: Cut long intros and extra context. Keep sentences tight and purposeful.
+
+- Error support: Include steps for verification, troubleshooting, and recovering from mistakes.
+
+- For conceptual topics, Give a one-paragraph intro: "What" + "Why." For the concept body, provide definitions, examples, diagrams; no procedures. Optionally, add "Additional resources" sub-section with relevant links.
+
+- For procedure topics, for the title, use a gerund phrase. Give a one-paragraph intro: "What" + "Why." Procedure sections are in order: Prerequisites, Procedure steps (imperative; numbered), Verification, Troubleshooting, Next steps, Additional resources.
+
+- For reference topics, use a one-paragraph introduction. For the body, use a list or table of lookup data, logically ordered. Optionally, include an Additional resources section.
 
 Now, directly provide Markdown output (DON'T need ```markdown``` tags):
 """
         chapter_content = call_llm(prompt)
         # Basic validation/cleanup
-        actual_heading = f"# Chapter {chapter_num}: {abstraction_name}" # Use potentially translated name
-        if not chapter_content.strip().startswith(f"# Chapter {chapter_num}"):
+        actual_heading = f"# {abstraction_name}" # Use potentially translated name
+        if not chapter_content.strip().startswith(f"# {abstraction_name}"):
              # Add heading if missing or incorrect, trying to preserve content
              lines = chapter_content.strip().split('\n')
              if lines and lines[0].strip().startswith("#"): # If there's some heading, replace it

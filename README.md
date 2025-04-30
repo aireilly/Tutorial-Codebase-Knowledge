@@ -95,7 +95,7 @@ This is a tutorial project of [Pocket Flow](https://github.com/The-Pocket/Pocket
 4. Generate a complete codebase tutorial by running the main script:
     ```bash
     # Analyze a GitHub repository
-    python main.py --repo https://github.com/username/repo --include "*.py" "*.js" --exclude "tests/*" --max-size 50000
+    python main.py --repo https://github.com/SierraSoftworks/bash-cli --include "*.py" "*.sh" "cli" "complete" "*.js" --exclude "tests/*" --max-size 50000
 
     # Or, analyze a local directory
     python main.py --dir /path/to/your/codebase --include "*.py" --exclude "*test*"
