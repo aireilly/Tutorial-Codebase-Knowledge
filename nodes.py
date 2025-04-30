@@ -572,7 +572,9 @@ Instructions for the chapter (Generate content in {language.capitalize()} unless
 
 - Structure output sections into one of three topic types, concept, reference, procedure. Choose the topic type (concept, procedure, reference) based on content intent.
 
-- For conceptual topics, give a one-paragraph intro: "What" + "Why." For the concept body, provide definitions, examples, diagrams; no procedures. Optionally, add "Additional resources" sub-section with relevant links.
+- For conceptual topics, give a one-paragraph intro: "What" + "Why." For the concept body, provide definitions, examples, diagrams; no procedures. Optionally, add "Additional resources" sub-section with relevant links. If the concept is just a few sentences or less, consider adding it as an introduction to a procedure or reference.
+
+- Don't start any title with the words "Concept", "Reference", or "Procedure" followed by a colon.
 
 - For procedure topics, use a gerund phrase for the title. Give a one-paragraph intro: "What" + "Why." Procedure sections are in order: Prerequisites, Procedure steps (imperative; numbered), Verification, Troubleshooting, Next steps, Additional resources.
 
