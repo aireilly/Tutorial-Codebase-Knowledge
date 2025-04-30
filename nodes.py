@@ -443,7 +443,6 @@ class WriteChapters(BatchNode):
 
         # Get already written chapters to provide context
         # We store them temporarily during the batch run, not in shared memory yet
-        # The 'previous_chapters_summary' will be built progressively in the exec context
         self.chapters_written_so_far = [] # Use instance variable for temporary storage across exec calls
 
         # Create a complete list of all chapters
@@ -473,12 +472,6 @@ class WriteChapters(BatchNode):
                 # Get content using helper, passing indices
                 related_files_content_map = get_content_for_indices(files_data, related_file_indices)
 
-                # Get previous chapter info for transitions (uses potentially translated name)
-                prev_chapter = None
-                if i > 0:
-                    prev_idx = chapter_order[i-1]
-                    prev_chapter = chapter_filenames[prev_idx]
-
                 # Get next chapter info for transitions (uses potentially translated name)
                 next_chapter = None
                 if i < len(chapter_order) - 1:
@@ -493,10 +486,8 @@ class WriteChapters(BatchNode):
                     "project_name": shared["project_name"],  # Add project name
                     "full_chapter_listing": full_chapter_listing,  # Add the full chapter listing (uses potentially translated names)
                     "chapter_filenames": chapter_filenames,  # Add chapter filenames mapping (uses potentially translated names)
-                    "prev_chapter": prev_chapter,  # Add previous chapter info (uses potentially translated name)
                     "next_chapter": next_chapter,  # Add next chapter info (uses potentially translated name)
                     "language": language,  # Add language for multi-language support
-                    # previous_chapters_summary will be added dynamically in exec
                 })
             else:
                 print(f"Warning: Invalid abstraction index {abstraction_index} in chapter_order. Skipping.")
@@ -519,10 +510,6 @@ class WriteChapters(BatchNode):
             for idx_path, content in item["related_files_content_map"].items()
         )
 
-        # Get summary of chapters written *before* this one
-        # Use the temporary instance variable
-        previous_chapters_summary = "\n---\n".join(self.chapters_written_so_far)
-
         # Add language instruction and context notes only if not English
         language_instruction = ""
         concept_details_note = ""
@@ -535,7 +522,7 @@ class WriteChapters(BatchNode):
         tone_note = ""
         if language.lower() != "english":
             lang_cap = language.capitalize()
-            language_instruction = f"IMPORTANT: Write this ENTIRE doc chapter in **{lang_cap}**. Some input context (like concept name, description, chapter list, previous summary) might already be in {lang_cap}, but you MUST translate ALL other generated content including explanations, examples, technical terms, and potentially code comments into {lang_cap}. DO NOT use English anywhere except in code syntax, required proper nouns, or when specified. The entire output MUST be in {lang_cap}.\n\n"
+            language_instruction = f"IMPORTANT: Write this ENTIRE doc chapter in **{lang_cap}**. Some input context (like concept name, description, chapter list) might already be in {lang_cap}, but you MUST translate ALL other generated content including explanations, examples, technical terms, and potentially code comments into {lang_cap}. DO NOT use English anywhere except in code syntax, required proper nouns, or when specified. The entire output MUST be in {lang_cap}.\n\n"
             concept_details_note = f" (Note: Provided in {lang_cap})"
             structure_note = f" (Note: Chapter names might be in {lang_cap})"
             prev_summary_note = f" (Note: This summary might be in {lang_cap})"
@@ -557,16 +544,11 @@ Concept Details{concept_details_note}:
 Complete Doc Structure{structure_note}:
 {item["full_chapter_listing"]}
 
-Context from previous chapters{prev_summary_note}:
-{previous_chapters_summary if previous_chapters_summary else "This is the first chapter."}
-
 Relevant Code Snippets (Code itself remains unchanged):
 {file_context_str if file_context_str else "No specific code snippets provided for this abstraction."}
 
 Instructions for the chapter (Generate content in {language.capitalize()} unless specified otherwise):
 - Start with a clear heading (e.g., `# {abstraction_name}`). Use the provided concept name.
-
-- If this is not the first chapter, begin with a brief transition from the previous chapter{instruction_lang_note}, referencing it with a proper Markdown link using its name{link_lang_note}.
 
 - Begin with a high-level motivation explaining what problem this abstraction solves{instruction_lang_note}. Start with a central use case as a concrete example. The whole chapter should guide the reader to understand how to solve this use case. Make it very minimal and friendly to beginners.
 
